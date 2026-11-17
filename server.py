@@ -1,7 +1,7 @@
 import socket
 import threading
 #라브러리를 가져옴 TCP Socket 통신 및 스레딩을 처리
-from chess import Game, make_move, get_AI_move, game_ended, print_outcome
+from chess import Game, make_move, get_AI_move, game_ended, print_outcome, parse_move_code, move2str
 #chess 모듈에서 여러 함수와 클래스를 가져옴
 HOST = '0.0.0.0'    #모든 네트워크 인터페이스에서 연결을 수락하도록 설정
 PORT = 65432        #사용할 포트 설정
