@@ -328,4 +328,5 @@ def play_random_color(game=chess.Game()):
     play_as(game, color)
 
 # chess.verbose = True
-play_random_color() #게임시작 -> 호출 시 랜덤한 색상으로 게임을 시작
+if __name__ == '__main__':
+    play_random_color()

@@ -2,7 +2,7 @@ import socket
 import threading
 import pygame
 from chess import Game, parse_move_code, game_ended, print_outcome, make_move, move2str, str2bb
-from gui import print_board, print_rotated_board, resize_screen
+from gui import print_board, print_rotated_board, resize_screen, coord2str
 # 서버의 IP 주소와 포트 설정
 HOST = '192.168.0.16'  # 서버의 로컬 IP 주소
 PORT = 65432
@@ -16,26 +16,28 @@ def send_move_to_server(move_str):
     return data.decode('utf-8')
 #Pygame을 사용하여 GUI를 표시하고 사용자 입력을 처리하는 함수
 def handle_gui():
+    global game
     pygame.init()   #Pygame 초기화
     resize_screen(60)  # 각 체스 칸의 크기를 60 픽셀로 설정
     clock = pygame.time.Clock() # FPS 설정을 위한 시계 객체 생성
+    leaving_square = None
 
     while True:
         clock.tick(30)  # 30 FPS로 설정
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                return
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()    #마우스 클릭 위치 얻기
                 square = coord2str(pos)         #클릭 위치를 체스 보드 위치로 변환
-                global leaving_square           
                 leaving_square = square         #출발 위치 저장
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONUP and leaving_square is not None:
                 pos = pygame.mouse.get_pos()        #마우스 버튼을 놓은 위치 얻기
                 square = coord2str(pos)             #놓은 위치 체스 보드 위치로 변환
                 arriving_square = square        #도착 위치 저장
                 move_str = leaving_square + arriving_square
+                leaving_square = None
                 move = parse_move_code(game, move_str)
                 if move:
                     game = make_move(game, move)    #이동이 유효하면 게임 상태 업데이트
